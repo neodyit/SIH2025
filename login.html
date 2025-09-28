@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- START: Meta Tags and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Login - Gamified Platform</title>
+    <!-- END: Meta Tags and Title -->
+
+    <!-- START: Tailwind CSS CDN (Used for utility-first styling) -->
+    <!-- This script loads the Tailwind CSS framework dynamically. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- END: Tailwind CSS CDN -->
+
+    <!-- START: Configuration for Tailwind and Custom Styles -->
+    <style>
+        /* Configure the default font to Inter for a modern look */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        /* === Base DARK Theme Styles (Default) === */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* CUSTOM BACKGROUND: Dark radial gradient */
+            background: radial-gradient(circle at top left, #1f2937 0%, #0c0a09 100%); 
+            transition: all 0.5s ease-in-out; /* Smooth transition for background changes */
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Dark Input Fields Base Styling */
+        .input-focus {
+            background-color: #374151; /* Gray-700 */
+            color: #f3f4f6; /* Light gray text */
+            border: 1px solid #4b5563; /* Gray-600 border */
+            transition: all 0.3s ease;
+        }
+        
+        /* Dark Input Focus (Glow Effect) */
+        .input-focus:focus {
+            border-color: #6366f1; /* Indigo-500 border color on focus */
+            box-shadow: 0 0 10px rgba(99, 102, 241, 0.8), 
+                        0 0 0 3px rgba(99, 102, 241, 0.5); 
+            background-color: #4b5563; 
+        }
+
+        /* Shake Animation */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-10px); } 
+            20%, 40%, 60%, 80% { transform: translateX(10px); } 
+        }
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        /* === Light Mode Overrides === */
+        /* Applied when the 'light-mode' class is present on the body */
+
+        .light-mode {
+            /* Light body background */
+            background: #f3f4f6;
+            color: #1f2937; /* Default dark text */
+        }
+
+        .light-mode #loginCard {
+            /* White card, subtle shadow, dark border */
+            background-color: #ffffff !important;
+            border-color: #d1d5db !important;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            transition: all 0.5s ease-in-out;
+        }
+
+        .light-mode .dark-text {
+            color: #1f2937 !important; /* Forces dark text on card elements */
+        }
+        .light-mode .light-text {
+            color: #4b5563 !important; /* Forces gray text on subtitle/helpers */
+        }
+        
+        .light-mode .input-focus {
+            /* Light input background, dark text, light border */
+            background-color: #ffffff;
+            color: #1f2937;
+            border: 1px solid #d1d5db;
+        }
+        
+        .light-mode .input-focus:focus {
+            /* Standard focus ring in light mode */
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.5);
+            background-color: #ffffff;
+        }
+        
+        .light-mode .premium-box {
+            /* Light mode 'Keep me logged in' box */
+            background-color: #eef2ff !important; /* Light indigo */
+            border-color: #a5b4fc !important; /* Indigo-300 */
+        }
+        
+        .light-mode .premium-box-text {
+            color: #1f2937 !important;
+        }
+        
+        .light-mode .social-button-dark {
+             /* Social button update for light mode */
+            background-color: #ffffff !important;
+            color: #1f2937 !important;
+            border: 1px solid #d1d5db !important;
+        }
+        .light-mode .social-button-dark:hover {
+            background-color: #f3f4f6 !important;
+        }
+        /* End Light Mode Overrides */
+    </style>
+    <!-- END: Configuration for Tailwind and Custom Styles -->
+</head>
+
+<body>
+
+    <!-- START: Main Login Card Container -->
+    <!-- Dark, semi-transparent card with a glow border (will be overridden in light mode) -->
+    <div id="loginCard" class="w-full max-w-md bg-gray-800/95 border border-indigo-600/50 p-8 md:p-10 shadow-2xl rounded-xl relative">
+        
+        <!-- START: Theme Toggle Button -->
+        <button id="themeToggle" onclick="toggleTheme()" 
+                class="absolute top-4 right-4 p-2 rounded-full text-indigo-400 hover:text-indigo-300 transition duration-300 ease-in-out">
+            <!-- Icon placeholder (Moon for default Dark Mode) -->
+            <svg id="moonIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+            </svg>
+            <!-- Sun Icon (Initially hidden) -->
+            <svg id="sunIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+            </svg>
+        </button>
+        <!-- END: Theme Toggle Button -->
+
+        <!-- START: Header Section (Icon and Title) -->
+        <div class="text-center mb-8">
+            <!-- Icon/Logo Placeholder - CHANGED TO STUDY CAP (GRADUATION CAP) -->
+            <div class="text-indigo-400 text-5xl mb-2 drop-shadow-lg dark-text">
+                🎓
+            </div>
+            <!-- Main Title - text color changed to white -->
+            <h1 class="text-3xl font-extrabold text-white dark-text">
+                Student Access
+            </h1>
+            <!-- Subtitle/Call to action - text color changed to light gray -->
+            <p class="mt-2 text-sm text-gray-400 light-text">
+                Sign in to start your gamified learning journey.
+            </p>
+        </div>
+        <!-- END: Header Section -->
+
+        <!-- START: Login Form -->
+        <form id="loginForm" class="space-y-6">
+            
+            <!-- START: Input Field - Student ID/Email -->
+            <div>
+                <!-- Label text color changed to light gray -->
+                <label for="studentId" class="block text-sm font-medium text-gray-300 dark-text mb-1">
+                    Student ID or Email
+                </label>
+                <!-- Input uses the dark/light toggling 'input-focus' style -->
+                <input type="text" id="studentId" name="studentId" required 
+                       class="w-full px-4 py-3 rounded-lg placeholder-gray-400 input-focus transition duration-300 ease-in-out" 
+                       placeholder="e.g., S123456 or your.email@school.edu">
+            </div>
+            <!-- END: Input Field - Student ID/Email -->
+
+            <!-- START: Input Field - Password (MODIFIED FOR EYE TOGGLE) -->
+            <div class="relative">
+                <!-- Label text color changed to light gray -->
+                <label for="password" class="block text-sm font-medium text-gray-300 dark-text mb-1">
+                    Password
+                </label>
+                <!-- Added pr-12 padding to make room for the eye icon -->
+                <input type="password" id="password" name="password" required 
+                       class="w-full px-4 py-3 rounded-lg placeholder-gray-400 input-focus transition duration-300 ease-in-out pr-12" 
+                       placeholder="Enter your secret password">
+                
+                <!-- Eye Toggle Button (aligned vertically in the center) -->
+                <button type="button" id="passwordToggle" onclick="togglePasswordVisibility()" 
+                        class="absolute inset-y-0 right-0 top-6 flex items-center pr-3 text-gray-400 hover:text-indigo-400 dark-text">
+                    <!-- Eye Open Icon (default - password hidden) -->
+                    <svg id="eyeOpen" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.477 0 8.268 2.943 9.542 7-1.274 4.057-5.065 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                    </svg>
+                    <!-- Eye Closed Icon (hidden initially - password visible) -->
+                    <svg id="eyeClosed" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 16.122A10.015 10.015 0 0012 17c4.478 0 8.268-2.943 9.542-7a10.025 10.025 0 00-4.04-5.185m-5.48.5l-.014.014M12 21a9 9 0 009-9h-18a9 9 0 009 9z"></path>
+                    </svg>
+                </button>
+            </div>
+            <!-- END: Input Field - Password -->
+
+            <!-- START: Features Section (Keep Logged In & Forgot Password) -->
+            <!-- STYLING: Premium dark feature box. Uses 'premium-box' for override -->
+            <div class="p-3 bg-gray-700 border border-indigo-600/30 rounded-lg flex items-center justify-between premium-box">
+                <div class="flex items-center">
+                    <!-- Checkbox styling updated for dark background -->
+                    <input id="remember-me" name="remember-me" type="checkbox" 
+                           class="h-4 w-4 text-indigo-400 focus:ring-indigo-500 border-gray-600 rounded bg-gray-800">
+                    <!-- Label text color changed to white. Uses 'premium-box-text' for override -->
+                    <label for="remember-me" class="ml-2 block text-sm text-gray-200 premium-box-text">
+                        Keep me logged in
+                    </label>
+                </div>
+                
+                <div class="text-sm">
+                    <!-- Link color changed to lighter indigo for contrast -->
+                    <a href="#" onclick="showMessage('Password reset link activated. Check your email.', 'info')" 
+                       class="font-medium text-indigo-400 hover:text-indigo-300 transition duration-150 ease-in-out">
+                        Forgot Password?
+                    </a>
+                </div>
+            </div>
+            <!-- END: Features Section (Keep Logged In & Forgot Password) -->
+
+            <!-- START: Login Button -->
+            <div>
+                <button type="submit" 
+                        class="w-full flex justify-center py-3 px-4 rounded-lg shadow-lg text-sm font-semibold text-white 
+                               bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-opacity-50 
+                               transition duration-300 ease-in-out transform hover:scale-[1.01] hover:shadow-indigo-500/50">
+                    Login
+                </button>
+            </div>
+            <!-- END: Login Button -->
+
+        </form>
+        <!-- END: Login Form -->
+
+        <!-- START: Message Display Area (Custom component to replace browser alerts) -->
+        <!-- Updated message box styling for dark theme -->
+        <div id="messageBox" class="mt-4 p-3 text-sm text-center bg-green-900/50 border border-green-700 text-green-300 rounded-lg hidden">
+            <!-- JavaScript will insert messages here -->
+        </div>
+        <!-- END: Message Display Area -->
+
+
+        <!-- START: Social and ID Login Options -->
+        <div class="mt-8 pt-6 border-t border-gray-700">
+            <div class="text-center mb-4 text-sm font-medium text-gray-400 light-text">
+                Or create new account/continue with
+            </div>
+            
+            <div class="space-y-3">
+                <!-- Social Login Buttons: uses 'social-button-dark' for light mode override -->
+                <button type="button" onclick="showMessage('Redirecting to Google Sign-On...', 'info')"
+                        class="w-full flex items-center justify-center py-3 px-4 border border-gray-700 rounded-lg shadow-sm text-sm font-medium text-white 
+                               bg-gray-900 hover:bg-gray-700 transition duration-150 ease-in-out social-button-dark">
+                    <span class="mr-2 text-lg">G</span>
+                    Google Login
+                </button>
+                
+                <button type="button" onclick="showMessage('Redirecting to Apple Sign-In...', 'info')"
+                        class="w-full flex items-center justify-center py-3 px-4 border border-gray-700 rounded-lg shadow-sm text-sm font-medium text-white 
+                               bg-gray-900 hover:bg-gray-700 transition duration-150 ease-in-out social-button-dark">
+                    <span class="mr-2 text-lg"></span>
+                    Apple Login
+                </button>
+
+                <button type="button" onclick="showMessage('Redirecting to Institutional ID Login...', 'info')"
+                        class="w-full flex items-center justify-center py-3 px-4 border border-indigo-700/50 rounded-lg shadow-sm text-sm font-medium text-indigo-300 
+                               bg-indigo-900/50 hover:bg-indigo-900 transition duration-150 ease-in-out">
+                    <span class="mr-2 text-lg">🏛️</span>
+                    Institution ID Login
+                </button>
+            </div>
+
+            <p class="mt-4 text-center text-xs text-gray-500 light-text">
+                These options support both signing in and creating a new account.
+            </p>
+        </div>
+        <!-- END: Social and ID Login Options -->
+
+    </div>
+    <!-- END: Main Login Card Container -->
+
+
+    <!-- START: JavaScript Logic -->
+    <script>
+        // Get references to the core elements
+        const body = document.body;
+        const loginForm = document.getElementById('loginForm');
+        const messageBox = document.getElementById('messageBox');
+        const loginCard = document.getElementById('loginCard'); 
+        const moonIcon = document.getElementById('moonIcon');
+        const sunIcon = document.getElementById('sunIcon');
+        
+        // References for the new password toggle feature
+        const passwordInput = document.getElementById('password');
+        const eyeOpen = document.getElementById('eyeOpen');
+        const eyeClosed = document.getElementById('eyeClosed');
+
+
+        /**
+         * Initializes the theme based on local storage or system preference.
+         */
+        function initTheme() {
+            // Check if user has a preference saved
+            const storedTheme = localStorage.getItem('theme');
+            
+            if (storedTheme === 'light') {
+                setTheme('light');
+            } else if (storedTheme === 'dark') {
+                setTheme('dark');
+            } else {
+                // If no preference, default to dark (the page's default style)
+                setTheme('dark');
+            }
+        }
+        
+        /**
+         * Sets the theme (dark or light) and updates icons/storage.
+         * @param {string} theme - 'dark' or 'light'
+         */
+        function setTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-mode');
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-mode');
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        /**
+         * Toggles the theme between dark and light mode.
+         */
+        function toggleTheme() {
+            const currentTheme = body.classList.contains('light-mode') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+
+        /**
+         * Toggles the visibility of the password input field by changing its type.
+         */
+        function togglePasswordVisibility() {
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeOpen.classList.add('hidden');
+                eyeClosed.classList.remove('hidden');
+            } else {
+                passwordInput.type = 'password';
+                eyeOpen.classList.remove('hidden');
+                eyeClosed.classList.add('hidden');
+            }
+        }
+
+        /**
+         * Displays a message in the custom message box.
+         */
+        function showMessage(message, type = 'info') {
+            // Reset message box and determine styling based on type
+            messageBox.className = 'mt-4 p-3 text-sm text-center rounded-lg';
+            
+            if (type === 'success') {
+                // Dark theme success style
+                messageBox.classList.add('bg-green-900/50', 'border', 'border-green-700', 'text-green-300');
+            } else if (type === 'error') {
+                 // Dark theme error style
+                messageBox.classList.add('bg-red-900/50', 'border', 'border-red-700', 'text-red-300');
+            } else {
+                 // Dark theme info style
+                 messageBox.classList.add('bg-blue-900/50', 'border', 'border-blue-700', 'text-blue-300');
+            }
+            
+            // Check for light mode and adjust message box styling if necessary
+            if (body.classList.contains('light-mode')) {
+                messageBox.classList.remove('bg-green-900/50', 'border-green-700', 'text-green-300', 
+                                            'bg-red-900/50', 'border-red-700', 'text-red-300',
+                                            'bg-blue-900/50', 'border-blue-700', 'text-blue-300');
+                
+                if (type === 'success') {
+                    messageBox.classList.add('bg-green-100', 'border-green-300', 'text-green-700');
+                } else if (type === 'error') {
+                    messageBox.classList.add('bg-red-100', 'border-red-300', 'text-red-700');
+                } else {
+                    messageBox.classList.add('bg-blue-100', 'border-blue-300', 'text-blue-700');
+                }
+            }
+
+            messageBox.textContent = message;
+            messageBox.classList.remove('hidden');
+
+            // Hide the message after 5 seconds
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+                messageBox.textContent = '';
+            }, 5000);
+        }
+
+        // Handle form submission
+        loginForm.addEventListener('submit', (event) => {
+            // Prevent page reload
+            event.preventDefault(); 
+            
+            // Collect form data and check for empty fields
+            const studentId = document.getElementById('studentId').value.trim(); 
+            const password = document.getElementById('password').value.trim();
+
+            // START: Validation Check for Shake Animation (Moves left and right if fields are empty)
+            if (!studentId || !password) {
+                showMessage('Please fill in both Student ID and Password.', 'error');
+                
+                // 1. Add the shake class to the card
+                loginCard.classList.add('shake');
+                
+                // 2. Remove the shake class after the animation finishes
+                loginCard.addEventListener('animationend', () => {
+                    loginCard.classList.remove('shake');
+                }, { once: true });
+                
+                return; // Stop the login process here if validation fails
+            }
+            // END: Validation Check for Shake Animation
+
+
+            // --- SERVER CALL SIMULATION (Only runs if fields are filled) ---
+            
+            // Show loading message while simulating network call
+            showMessage(`Attempting login for ${studentId}...`, 'info');
+            
+            // Simulate 1.5 second network delay
+            setTimeout(() => {
+                // SUCCESS SIMULATION: Replace this with your actual server fetch/API call.
+                showMessage('Login successful! Welcome to the Gamified Platform.', 'success');
+                // You would redirect here: window.location.href = 'index.html';
+            }, 1500); 
+            // ------------------------------
+        });
+
+        // Initialize theme on page load
+        window.onload = initTheme;
+    </script>
+    <!-- END: JavaScript Logic -->
+
+</body>
+</html>

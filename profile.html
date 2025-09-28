@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- START: Meta Tags and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - SkillQuest</title>
+    <!-- END: Meta Tags and Title -->
+
+    <!-- START: Tailwind CSS CDN (Used for utility-first styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- END: Tailwind CSS CDN -->
+
+    <!-- START: Configuration for Tailwind and Custom Styles -->
+    <style>
+        /* Configure the default font to Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        /* === Base DARK Theme Styles (Default) === */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* CUSTOM BACKGROUND: Dark radial gradient */
+            background: radial-gradient(circle at top left, #1f2937 0%, #0c0a09 100%); 
+            color: #e5e7eb; /* Default light gray text */
+            transition: all 0.5s ease-in-out;
+            min-height: 100vh;
+        }
+
+        /* Styling for the main content cards/sections */
+        .profile-card {
+            background-color: #1f2937; /* Darker gray for card background */
+            border: 1px solid #374151; /* Subtle border */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+        .profile-input {
+            background-color: #374151;
+            border-color: #4b5563;
+            color: #f3f4f6;
+            transition: border-color 0.2s;
+        }
+        .profile-input:focus {
+            border-color: #6366f1; /* Indigo glow on focus */
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+        }
+        
+        /* === Light Mode Overrides === */
+        .light-mode {
+            background: #f3f4ffa8; /* Very light gray background */
+            color: #1f2937; /* Default dark text */
+        }
+
+        .light-mode .header-bg {
+            background-color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .light-mode .profile-card {
+            background-color: #ffffff !important;
+            border-color: #d1d5db !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .light-mode .profile-input {
+            background-color: #f9fafb !important;
+            border-color: #d1d5db !important;
+            color: #1f2937 !important;
+        }
+
+        .light-mode .text-dark {
+            color: #1f2937 !important;
+        }
+
+        .light-mode .text-light {
+            color: #4b5563 !important;
+        }
+
+        /* Custom Modal Styling */
+        #messageBox {
+            z-index: 60; /* Above header */
+            top: 1rem;
+            right: 1rem;
+            position: fixed;
+            min-width: 250px;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s, visibility 0.3s, transform 0.3s;
+            transform: translateY(-20px);
+        }
+
+        #messageBox.show {
+            visibility: visible;
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+    <!-- END: Configuration for Tailwind and Custom Styles -->
+</head>
+
+<body id="body">
+    
+    <!-- START: Message Box (for feedback instead of alert()) -->
+    <div id="messageBox" class="rounded-lg p-4 text-sm font-semibold bg-indigo-600 text-white shadow-xl">
+        Profile updated successfully!
+    </div>
+    <!-- END: Message Box -->
+
+
+    <!-- START: Header/Navigation -->
+    <header class="header-bg sticky top-0 z-50 bg-gray-900/90 backdrop-blur-sm shadow-xl transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            
+            <!-- Logo/Platform Title -->
+            <div class="flex items-center space-x-3">
+                <!-- Study Cap Icon -->
+                <span class="text-indigo-400 text-3xl">🎓</span>
+                <h1 class="text-2xl font-bold text-white text-dark">
+                    SkillQuest
+                </h1>
+            </div>
+
+            <!-- Navigation Links (Profile is now active) -->
+            <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="index.html" class="text-gray-400 hover:text-white text-light transition-colors">Dashboard</a>
+                <a href="#" class="text-indigo-400 hover:text-indigo-300 transition-colors">Profile</a> <!-- Active Link -->
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Assignment</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Courses</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Challenges</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Leaderboard</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Chatbot</a>
+            </nav>
+
+            <!-- User Profile and Theme Toggle -->
+            <div class="flex items-center space-x-4">
+                
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle" onclick="toggleTheme()" 
+                        class="p-2 rounded-full text-indigo-400 hover:bg-gray-700/50 transition duration-300 ease-in-out">
+                    <!-- Moon Icon (Dark Mode) -->
+                    <svg id="moonIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <!-- Sun Icon (Light Mode - Initially hidden) -->
+                    <svg id="sunIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+
+                <!-- User Profile Dropdown Simulation -->
+                <div class="flex items-center space-x-2 cursor-pointer group">
+                    <img class="h-8 w-8 rounded-full border-2 border-indigo-500" 
+                         src="https://placehold.co/150x150/6366f1/ffffff?text=U" 
+                         alt="User Avatar">
+                    <span class="hidden sm:inline text-sm font-medium text-white text-dark group-hover:text-indigo-400 transition-colors">
+                        Sarthak J.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- END: Header/Navigation -->
+
+    <!-- START: Main Content Area -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <!-- START: Profile Card -->
+        <div class="p-6 sm:p-10 rounded-xl profile-card border-indigo-600/30">
+            
+            <h2 class="text-3xl font-bold text-white text-dark mb-8 border-b border-gray-700 pb-3">
+                Student Profile & Settings
+            </h2>
+
+            <!-- Profile Header (Avatar and Basic Info) -->
+            <div class="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-8 mb-8">
+                <div class="relative">
+                    <img class="h-28 w-28 rounded-full border-4 border-indigo-500 object-cover" 
+                         src="https://placehold.co/150x150/6366f1/ffffff?text=SJ" 
+                         alt="User Avatar">
+                    <!-- Edit Avatar Button -->
+                    <button class="absolute bottom-0 right-0 p-2 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition-colors shadow-md">
+                        <!-- Camera Icon -->
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.865-1.637A2 2 0 0110.74 3h2.52a2 2 0 011.664.89l.865 1.637a2 2 0 001.664.89H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </button>
+                </div>
+
+                <div class="text-center sm:text-left">
+                    <p class="text-2xl font-bold text-white text-dark">Sarthak J.</p>
+                    <p class="text-md text-indigo-400 font-medium">Student ID: SKQ-90123</p>
+                    <p class="text-sm text-gray-400 text-light mt-2">"Aspiring AI Developer & Data Wizard"</p>
+                </div>
+            </div>
+            
+            <!-- START: Editable Details Form -->
+            <form id="profileForm" onsubmit="handleProfileUpdate(event)">
+                <h3 class="text-xl font-semibold text-white text-dark mb-4 mt-6 border-b border-gray-800 pb-2">
+                    Edit Personal Information
+                </h3>
+                
+                <!-- Full Name Field -->
+                <div class="mb-4">
+                    <label for="fullName" class="block text-sm font-medium text-gray-300 text-light mb-1">Full Name</label>
+                    <input type="text" id="fullName" value="Sarthak J." required
+                           class="w-full p-3 rounded-lg profile-input focus:ring-0 focus:outline-none">
+                </div>
+
+                <!-- Email Field (Read-only for security) -->
+                <div class="mb-4">
+                    <label for="email" class="block text-sm font-medium text-gray-300 text-light mb-1">Email Address (Read-only)</label>
+                    <input type="email" id="email" value="sarthak.j@university.edu" readonly
+                           class="w-full p-3 rounded-lg profile-input opacity-70 cursor-not-allowed">
+                </div>
+
+                <!-- Bio/Tagline Field -->
+                <div class="mb-6">
+                    <label for="tagline" class="block text-sm font-medium text-gray-300 text-light mb-1">Tagline / Bio</label>
+                    <textarea id="tagline" rows="2" 
+                              class="w-full p-3 rounded-lg profile-input focus:ring-0 focus:outline-none">Aspiring AI Developer & Data Wizard</textarea>
+                </div>
+
+                <!-- START: Gamification Stats (Read-only) -->
+                <h3 class="text-xl font-semibold text-white text-dark mb-4 mt-8 border-b border-gray-800 pb-2">
+                    Gamification Status
+                </h3>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <!-- Level -->
+                    <div>
+                        <p class="text-sm font-medium text-gray-300 text-light">Current Level</p>
+                        <p class="text-2xl font-bold text-indigo-400">15</p>
+                    </div>
+                    <!-- Global Rank -->
+                    <div>
+                        <p class="text-sm font-medium text-gray-300 text-light">Global Rank</p>
+                        <p class="text-2xl font-bold text-yellow-400">#127</p>
+                    </div>
+                </div>
+                <!-- END: Gamification Stats -->
+
+                <!-- Save Button -->
+                <button type="submit" 
+                        class="mt-8 w-full py-3 rounded-lg shadow-xl text-lg font-semibold text-white 
+                               bg-indigo-600 hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-[1.005] hover:shadow-indigo-500/50">
+                    Save Changes
+                </button>
+            </form>
+            <!-- END: Editable Details Form -->
+
+        </div>
+        <!-- END: Profile Card -->
+
+    </main>
+    <!-- END: Main Content Area -->
+
+
+    <!-- START: JavaScript for Theme Toggle and Form Handling -->
+    <script>
+        const body = document.getElementById('body');
+        const moonIcon = document.getElementById('moonIcon');
+        const sunIcon = document.getElementById('sunIcon');
+        const messageBox = document.getElementById('messageBox');
+
+        // Function to display the custom message box
+        function showMessage(message, type = 'success') {
+            messageBox.textContent = message;
+            // You can add logic here to change background based on type (e.g., error, warning)
+            messageBox.classList.remove('bg-indigo-600', 'bg-red-600');
+            messageBox.classList.add(type === 'success' ? 'bg-indigo-600' : 'bg-red-600');
+            messageBox.classList.add('show');
+            
+            // Hide the box after 3 seconds
+            setTimeout(() => {
+                messageBox.classList.remove('show');
+            }, 3000);
+        }
+
+
+        /**
+         * Sets the theme (dark or light) and updates icons/storage.
+         * @param {string} theme - 'dark' or 'light'
+         */
+        function setTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-mode');
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-mode');
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        /**
+         * Toggles the theme between dark and light mode.
+         */
+        function toggleTheme() {
+            const currentTheme = body.classList.contains('light-mode') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+        
+        /**
+         * Initializes the theme based on local storage.
+         */
+        function initTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme) {
+                setTheme(storedTheme);
+            } else {
+                // Default to dark if no preference is found
+                setTheme('dark');
+            }
+        }
+
+        /**
+         * Handles the profile update form submission.
+         */
+        function handleProfileUpdate(event) {
+            event.preventDefault();
+
+            // Simulate sending data to the server
+            const fullName = document.getElementById('fullName').value;
+            const tagline = document.getElementById('tagline').value;
+
+            console.log('Attempting to update profile...');
+            console.log('New Name:', fullName);
+            console.log('New Tagline:', tagline);
+
+            // Here you would typically use fetch() to send data to your SIH backend.
+            // Example simulation of success:
+            setTimeout(() => {
+                showMessage(`Profile for ${fullName} updated successfully!`);
+                // Update the small user name in the header
+                const headerUsername = document.querySelector('.group span');
+                if (headerUsername) {
+                    headerUsername.textContent = fullName;
+                }
+            }, 1000);
+
+            return false; // Prevent form submission
+        }
+
+
+        // Initialize theme on page load
+        window.onload = initTheme;
+    </script>
+    <!-- END: JavaScript for Theme Toggle and Form Handling -->
+
+</body>
+</html>

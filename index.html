@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- START: Meta Tags and Title -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gamified Learning</title>
+    <!-- END: Meta Tags and Title -->
+
+    <!-- START: Tailwind CSS CDN (Used for utility-first styling) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- END: Tailwind CSS CDN -->
+
+    <!-- START: Configuration for Tailwind and Custom Styles -->
+    <style>
+        /* Configure the default font to Inter */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100..900&display=swap');
+
+        /* === Base DARK Theme Styles (Default) === */
+        body {
+            font-family: 'Inter', sans-serif;
+            /* CUSTOM BACKGROUND: Dark radial gradient */
+            background: radial-gradient(circle at top left, #1f2937 0%, #0c0a09 100%); 
+            color: #e5e7eb; /* Default light gray text */
+            transition: all 0.5s ease-in-out;
+            min-height: 100vh;
+        }
+
+        /* Styling for the main content cards/sections */
+        .gamified-card {
+            background-color: #1f2937; /* Darker gray for card background */
+            border: 1px solid #374151; /* Subtle border */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.5), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+        }
+        .gamified-card:hover {
+            border-color: #6366f1; /* Indigo glow on hover */
+            transform: translateY(-2px);
+        }
+        
+        /* === Light Mode Overrides === */
+        .light-mode {
+            background: #f3f4ffa8; /* Very light gray background */
+            color: #1f2937; /* Default dark text */
+        }
+
+        .light-mode .header-bg {
+            background-color: #ffffff !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .light-mode .gamified-card {
+            background-color: #ffffff !important;
+            border-color: #d1d5db !important;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+        }
+
+        .light-mode .gamified-card:hover {
+            border-color: #4f46e5;
+        }
+
+        .light-mode .text-dark {
+            color: #1f2937 !important;
+        }
+
+        .light-mode .text-light {
+            color: #4b5563 !important;
+        }
+    </style>
+    <!-- END: Configuration for Tailwind and Custom Styles -->
+</head>
+
+<body id="body">
+    <!-- START: Header/Navigation -->
+    <header class="header-bg sticky top-0 z-50 bg-gray-900/90 backdrop-blur-sm shadow-xl transition-all duration-500">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            
+            <!-- Logo/Platform Title -->
+            <div class="flex items-center space-x-3">
+                <!-- Study Cap Icon -->
+                <span class="text-indigo-400 text-3xl">🎓</span>
+                <h1 class="text-2xl font-bold text-white text-dark">
+                    SkillQuest
+                </h1>
+            </div>
+
+            <!-- Navigation Links (Includes Profile, Assignment, and Chatbot) -->
+            <nav class="hidden md:flex space-x-8 text-sm font-medium">
+                <a href="#" class="text-indigo-400 hover:text-indigo-300 transition-colors">Dashboard</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Profile</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Assignment</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Courses</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Challenges</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Leaderboard</a>
+                <a href="#" class="text-gray-400 hover:text-white text-light transition-colors">Chatbot</a>
+            </nav>
+
+            <!-- User Profile and Theme Toggle -->
+            <div class="flex items-center space-x-4">
+                
+                <!-- Theme Toggle Button -->
+                <button id="themeToggle" onclick="toggleTheme()" 
+                        class="p-2 rounded-full text-indigo-400 hover:bg-gray-700/50 transition duration-300 ease-in-out">
+                    <!-- Moon Icon (Dark Mode) -->
+                    <svg id="moonIcon" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"></path>
+                    </svg>
+                    <!-- Sun Icon (Light Mode - Initially hidden) -->
+                    <svg id="sunIcon" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                    </svg>
+                </button>
+
+                <!-- User Profile Dropdown Simulation -->
+                <div class="flex items-center space-x-2 cursor-pointer group">
+                    <img class="h-8 w-8 rounded-full border-2 border-indigo-500" 
+                         src="https://placehold.co/150x150/6366f1/ffffff?text=U" 
+                         alt="User Avatar">
+                    <span class="hidden sm:inline text-sm font-medium text-white text-dark group-hover:text-indigo-400 transition-colors">
+                        Sarthak J.
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+    <!-- END: Header/Navigation -->
+
+    <!-- START: Main Content Area -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+        
+        <!-- START: Hero Section -->
+        <div class="text-center py-12 rounded-xl border border-indigo-600/30 mb-10 gamified-card">
+            <h2 class="text-4xl sm:text-5xl font-extrabold text-white text-dark mb-4">
+                Welcome Back, Sarthak!
+            </h2>
+            <p class="text-lg text-gray-400 text-light max-w-2xl mx-auto">
+                Your next challenge awaits! You are currently ranked **Global #127**. Keep pushing for the top spot.
+            </p>
+            <button onclick="console.log('Start New Challenge clicked')"
+                    class="mt-6 py-3 px-8 rounded-full shadow-xl text-lg font-semibold text-white 
+                           bg-indigo-600 hover:bg-indigo-700 transition duration-300 ease-in-out transform hover:scale-[1.02] hover:shadow-indigo-500/50">
+                Start Next Challenge
+            </button>
+        </div>
+        <!-- END: Hero Section -->
+
+        <!-- START: Gamification Metrics Grid -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+            
+            <!-- Metric Card 1: Level -->
+            <div class="p-6 rounded-xl gamified-card border-indigo-500/50 border-l-4">
+                <p class="text-sm font-medium text-indigo-400">Current Level</p>
+                <div class="flex items-center justify-between mt-1">
+                    <span class="text-4xl font-extrabold text-white text-dark">15</span>
+                    <span class="text-xs text-green-400 bg-green-900/30 py-1 px-3 rounded-full">+3 since last week</span>
+                </div>
+                <div class="mt-4">
+                    <p class="text-xs text-gray-400 text-light mb-1">XP Progress: 450 / 800</p>
+                    <!-- Progress Bar -->
+                    <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="bg-indigo-500 h-2 rounded-full" style="width: 56.25%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Metric Card 2: Points / Currency -->
+            <div class="p-6 rounded-xl gamified-card border-purple-500/50 border-l-4">
+                <p class="text-sm font-medium text-purple-400">Skill Points (SP)</p>
+                <div class="flex items-center mt-1">
+                    <span class="text-4xl font-extrabold text-white text-dark">4,280</span>
+                    <span class="ml-4 text-2xl text-purple-400">🪙</span>
+                </div>
+                <p class="mt-4 text-xs text-gray-400 text-light">
+                    Spend your points in the Rewards Store.
+                </p>
+            </div>
+
+            <!-- Metric Card 3: Badges / Achievements -->
+            <div class="p-6 rounded-xl gamified-card border-yellow-500/50 border-l-4">
+                <p class="text-sm font-medium text-yellow-400">Badges Earned</p>
+                <div class="flex items-center mt-1">
+                    <span class="text-4xl font-extrabold text-white text-dark">9</span>
+                    <div class="ml-4 flex space-x-2 text-2xl">
+                        <span title="First Code">🥇</span>
+                        <span title="Mastery">🏆</span>
+                        <span title="Team Player">🤝</span>
+                    </div>
+                </div>
+                <p class="mt-4 text-xs text-gray-400 text-light">
+                    Unlock 3 more for the "Scholar" title.
+                </p>
+            </div>
+        </div>
+        <!-- END: Gamification Metrics Grid -->
+
+        <!-- START: Featured Content Section -->
+        <h2 class="text-3xl font-bold text-white text-dark mb-6 border-b border-gray-700 pb-2">
+            Featured Courses & Quests
+        </h2>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <!-- Content Card 1: Data Structures -->
+            <div class="p-5 rounded-xl gamified-card hover:bg-gray-800/80 cursor-pointer">
+                <div class="text-indigo-400 text-3xl mb-2">
+                    📚
+                </div>
+                <h3 class="text-xl font-semibold text-white text-dark mb-1">Data Structures (Module 3)</h3>
+                <p class="text-sm text-gray-400 text-light mb-3">
+                    Learn advanced tree and graph algorithms. **3x XP Bonus!**
+                </p>
+                <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm font-medium">Continue Course →</a>
+            </div>
+            
+            <!-- Content Card 2: Python Challenge -->
+            <div class="p-5 rounded-xl gamified-card hover:bg-gray-800/80 cursor-pointer">
+                <div class="text-green-400 text-3xl mb-2">
+                    🐍
+                </div>
+                <h3 class="text-xl font-semibold text-white text-dark mb-1">Weekly Python Challenge</h3>
+                <p class="text-sm text-gray-400 text-light mb-3">
+                    Solve the "Traveling Salesman" problem in 7 days to earn 500 SP.
+                </p>
+                <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm font-medium">View Challenge →</a>
+            </div>
+
+            <!-- Content Card 3: New Feature -->
+            <div class="p-5 rounded-xl gamified-card hover:bg-gray-800/80 cursor-pointer">
+                <div class="text-red-400 text-3xl mb-2">
+                    🔥
+                </div>
+                <h3 class="text-xl font-semibold text-white text-dark mb-1">New: Live Battle Arena</h3>
+                <p class="text-sm text-gray-400 text-light mb-3">
+                    Compete head-to-head with other students in real-time coding duels!
+                </p>
+                <a href="#" class="text-indigo-400 hover:text-indigo-300 text-sm font-medium">Join Arena →</a>
+            </div>
+        </div>
+        <!-- END: Featured Content Section -->
+
+    </main>
+    <!-- END: Main Content Area -->
+
+    <!-- START: Footer -->
+    <footer class="bg-gray-900/50 mt-10 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8 text-center text-sm text-gray-500 text-light">
+            &copy; 2023 SkillQuest Gamified Learning Platform | SIH Project.
+        </div>
+    </footer>
+    <!-- END: Footer -->
+
+
+    <!-- START: JavaScript for Theme Toggle -->
+    <script>
+        const body = document.getElementById('body');
+        const moonIcon = document.getElementById('moonIcon');
+        const sunIcon = document.getElementById('sunIcon');
+
+        /**
+         * Sets the theme (dark or light) and updates icons/storage.
+         * This function is reused from your login page for consistency.
+         * @param {string} theme - 'dark' or 'light'
+         */
+        function setTheme(theme) {
+            if (theme === 'light') {
+                body.classList.add('light-mode');
+                moonIcon.classList.add('hidden');
+                sunIcon.classList.remove('hidden');
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.classList.remove('light-mode');
+                moonIcon.classList.remove('hidden');
+                sunIcon.classList.add('hidden');
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        /**
+         * Toggles the theme between dark and light mode.
+         */
+        function toggleTheme() {
+            const currentTheme = body.classList.contains('light-mode') ? 'light' : 'dark';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            setTheme(newTheme);
+        }
+        
+        /**
+         * Initializes the theme based on local storage.
+         */
+        function initTheme() {
+            const storedTheme = localStorage.getItem('theme');
+            if (storedTheme) {
+                setTheme(storedTheme);
+            } else {
+                // Default to dark if no preference is found
+                setTheme('dark');
+            }
+        }
+
+        // Initialize theme on page load
+        window.onload = initTheme;
+    </script>
+    <!-- END: JavaScript for Theme Toggle -->
+
+</body>
+</html>
